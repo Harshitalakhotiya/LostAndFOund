@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Get coordinates of the mouse pointer</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style type="text/css">
+    #info {
+        display: block;
+        position: relative;
+        margin: 0px auto;
+        width: 50%;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 12px;
+        text-align: center;
+        color: #222;
+        background: #fff;
+    }
+</style>
+<div id="map" style = "width : 400px; height : 400px"></div>
+<pre id="info"></pre>
+<script>
+    var xvar = 0, yvar = 0;
+	mapboxgl.accessToken = 'pk.eyJ1IjoibWFkcmR4IiwiYSI6ImNrbTdvdGU3eTB6NmgycHcwcGpmYjljZncifQ.yFHym2yQSKYvXjRDgvz2DQ';
+    // var map = new mapboxgl.Map({
+    //     container: 'map', // container id
+    //     style: 'mapbox://styles/mapbox/streets-v11',
+    //     center: [-74.5, 40], // starting position
+    //     zoom: 9 // starting zoom
+    // });
+    // map.on('click', 'symbols', function (e) {
+    // map.flyTo({
+    // center: e.features[0].geometry.coordinates
+    // });
+    // });
+
+    // map.on('mousemove', function (e) {
+    //     document.getElementById('info').innerHTML =
+    //         // e.point is the x, y coordinates of the mousemove event relative
+    //         // to the top-left corner of the map
+    //         JSON.stringify(e.point) +
+    //         '<br />' +
+    //         // e.lngLat is the longitude, latitude geographical position of the event
+    //         JSON.stringify(e.lngLat.wrap());
+    // });
+    var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-122.486052, 37.830348],
+    zoom: 14
+    });
+    map.on('style.load', function() {
+    map.on('click', function(e) {
+        var coordinates = e.lngLat;
+        
+        xvar = coordinates.toArray()[0]
+        // console.log(xvar)
+        yvar = coordinates.toArray()[1]
+        document.getElementById('fname').value = xvar;
+        document.getElementById('lname').value = yvar;
+        // console.log(yvar)
+        new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML('You clicked here: <br/>' + coordinates)
+        .addTo(map);
+        
+    });
+    });
+    
+</script>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<form id="form" method="POST" class = "">
+    <div class="form-group">
+        
+        {% csrf_token %}
+        <label for="fname">First name:</label><br>
+        <input type="text" value=0.0 id="fname" name="fname"><br>
+        <label for="lname">Last name:</label><br>
+        <input type="text" value=0.0 id="lname" name="lname"><br><br>
+        <input type="submit" value="Submit">
+     
+    </div>
+</form>
+  <script>
+
+    
+
+</script>
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ <script>
+// $(document).ready(function(){
+    $(document).on('submit','#form',function(e){
+        e.preventDefault();
+        console.log(xvar);
+//   $("button").click(function(){
+    $.ajax({
+        type: 'POST',
+        method: 'POST', 
+        url: 'buttonclick',
+        data: {
+            xvar : $('fname').val(),
+            yvar : $('lname').val(),
+            // 'xvar' : {'hello':'hello'},
+            // 'yvar' : {'hello':'hello'},
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        dataType: 'json',
+        error: function(request, status, error, data){
+            console.log(error);
+        },
+
+    });
+//   });
+});
+</script>
+
+-->
+
+</body>
+</html>
