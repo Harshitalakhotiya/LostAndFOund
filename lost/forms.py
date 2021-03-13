@@ -8,7 +8,7 @@ class TimeInput(forms.DateInput):
     input_type = 'time'
 
 
-class LostItemFoundForm(forms.ModelForm):
+class LostItemForm(forms.ModelForm):
 
 	class Meta:
 		model = LostItem

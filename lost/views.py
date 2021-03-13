@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.contrib.auth.models import User
+from found.models import Product
 import yake
 
 def extract_keywords(description):
@@ -27,41 +28,52 @@ def extract_keywords(description):
 	else:
 		return tags
 
-def home(request):
-	title = "Welcome To Lost and Found"
-	return render(request, 'lost/home.html', {'title': title})
-
 @login_required
-def found_form(request):
-	print(request.session)
-	if request.method == 'POST':
-		#print(request.POST.get('x'))
-		form = ProductFoundForm(request.POST)
-		if form.is_valid():
-			form.instance.person = request.user
-			this_item = form.save()
-			this_item.x = request.session.get('x', 0.0)
-			this_item.y = request.session.get('y', 0.0)
-			this_item.tags = ','.join(extract_keywords(request.POST['description']))
-			this_item.save()
+def lost_form(request):
+    print(request.session)
+    if request.method == 'POST':
+        #print(request.POST.get('x'))
+        form = LostItemForm(request.POST)
+        if form.is_valid():
+            form.instance.person = request.user
+            this_item = form.save()
+            this_item.x = request.session.get('x', 0.0)
+            this_item.y = request.session.get('y', 0.0)
+            this_item.tags = ','.join(extract_keywords(request.POST['description']))
+            this_item.save()
+            all_products = Product.objects.all()
 
-			messages.success(request,f'Item is successfully added')
-			context = {
-				'id': this_item.id,
-			}
-			return redirect('l&f-home')
-		else:
-			form = ProductFoundForm()
-			title = "Register Missing Article"
-			return render(request, 'found/foundform.html', {'form': form, 'title': title})
-	else:
-		form = ProductFoundForm()
-		title = "Register Missing Article"
-		return render(request, 'found/foundform.html', {'form': form, 'title': title})
+            finders = []
+            temp_item = []
+            for product in all_products:
+                flag_x = 0
+                if ((product.x - float(this_item.x))**2 + (product.y - float(this_item.y))**2)**0.5 <= 0.02:
+                    temp_item = list(product.tags.split(','))
+                    for kw in temp_item:
+                        for kw2 in list(this_item.tags.split(',')):
+                            if kw == kw2:
+                                flag_x += 1
+                    if flag_x >= 3:
+                        finders.append(product)
 
-def find_item(request):
-	title = "Find Lost Item"
-	return render(request, 'found/find_item.html', {'title': title})
+            #messages.success(request,f'Item is successfully added')
+            context = {
+                'id': this_item.id,
+                'finders': finders
+            }
+
+            print(finders)
+
+            return render(request, 'lost/result.html', context)
+            #return redirect('l&f-home')
+        else:
+            form = LostItemForm()
+            title = "Register Missing Article"
+            return render(request, 'lost/lostform.html', {'form': form, 'title': title})
+    else:
+        form = LostItemForm()
+        title = "Register Missing Article"
+        return render(request, 'lost/lostform.html', {'form': form, 'title': title})
 
 def index(request):
 	if request.method == 'POST':
@@ -77,8 +89,8 @@ def index(request):
 
 		request.session['x'] = xv
 		request.session['y'] = yv
-		#return render(request, 'foundform', context)
-		return redirect('foundform')
+		#return render(request, 'lostform', context)
+		return redirect('lostform')
 		# return JsonResponse({"xvar":xv,"yvar":yv})
 	else:
-		return render(request, 'found/map.html')
+		return render(request, 'lost/map.html')
