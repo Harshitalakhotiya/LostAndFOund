@@ -72,7 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'THE.wsgi.application'
 
-
+GEOPOSITION_GOOGLE_MAPS_API_KEY = 'AIzaSyDqzzYIK4pXT4j6TpiVbFKcdgoEXt5nDwA'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
