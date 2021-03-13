@@ -5,5 +5,6 @@ from .views import home
 
 urlpatterns = [
     path('',views.home, name='l&f-home'),
+    path('itemfound',views.found_form, name='foundform')
     
 ]
