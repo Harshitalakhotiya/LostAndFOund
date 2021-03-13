@@ -1,4 +1,16 @@
 {% extends "found/base.html" %}
 {% block content %}
    HOME
+   <script>
+      function redirect(){
+         window.location.replace("{% url 'login' %}");
+      }
+   </script>
+
+   {% if not user.is_authenticated %}
+      <script>redirect();</script>
+   {% endif %}
+
+   <a href = "{% url 'foundform' %}">Register lost item</a>
+   <a href = "{% url 'lost' %}">Find Lost item</a>
 {% endblock content %}
