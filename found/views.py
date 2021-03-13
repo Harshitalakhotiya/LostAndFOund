@@ -8,13 +8,16 @@ def home(request):
 
 def found_form(request):
 	if request.method == 'POST':
-		form_data = {
-
-		}
 		#form = ProductFoundForm(request.POST.body)
 		#print(request.POST)
 		form = ProductFoundForm(request.POST)
-		return redirect('l&f-home')
+		if form.is_valid():
+			print("Complete")
+			return redirect('l&f-home')
+		else:
+			form = ProductFoundForm()
+			title = "Register Missing Article"
+			return render(request, 'found/foundform.html', {'form': form, 'title': title})
 	else:
 		form = ProductFoundForm()
 		title = "Register Missing Article"

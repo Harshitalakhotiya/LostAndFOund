@@ -1,6 +1,6 @@
 {% extends "found/base.html" %}
 {% block content %}
-   HOME
+   <link rel="stylesheet" type="text/css" href="{% static 'found/home.css' %}">
    <script>
       function redirect(){
          window.location.replace("{% url 'login' %}");
@@ -11,6 +11,16 @@
       <script>redirect();</script>
    {% endif %}
 
+   <table>
+      <tr>
+         <td>
+            
+         </td>
+         <td>
+
+         </td>
+      </tr>
+   </table>
    <a href = "{% url 'foundform' %}">Register lost item</a>
    <a href = "{% url 'lost' %}">Find Lost item</a>
 {% endblock content %}
