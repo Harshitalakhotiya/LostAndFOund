@@ -1,9 +1,18 @@
 {% extends "found/base.html" %}
 {% block content %}
+   {% load static %}
    <link rel="stylesheet" type="text/css" href="{% static 'found/home.css' %}">
    <script>
       function redirect(){
          window.location.replace("{% url 'login' %}");
+      }
+
+      function register_lost_item(){
+         window.location.replace("{% url 'foundform' %}");
+      }
+
+      function find_lost_item(){
+         window.location.replace("{% url 'lost' %}");
       }
    </script>
 
@@ -11,16 +20,12 @@
       <script>redirect();</script>
    {% endif %}
 
-   <table>
-      <tr>
-         <td>
-            
-         </td>
-         <td>
-
-         </td>
-      </tr>
-   </table>
-   <a href = "{% url 'foundform' %}">Register lost item</a>
-   <a href = "{% url 'lost' %}">Find Lost item</a>
+   <div class = "home-holder">
+      <div class = "register-lost-item" onclick = "register_lost_item()">
+         Yaharro
+      </div>
+      <div class = "find-item" onclick = "find_lost_item()">
+         Okay. HEY HEY!!!!!!!!!!
+      </div>
+   </div>
 {% endblock content %}
