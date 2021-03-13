@@ -40,7 +40,7 @@ def found_form(request):
 			this_item = form.save()
 			this_item.x = request.session.get('x', 0.0)
 			this_item.y = request.session.get('y', 0.0)
-			this_item.tags = ' '.join(extract_keywords(request.POST['description']))
+			this_item.tags = ','.join(extract_keywords(request.POST['description']))
 			this_item.save()
 
 			messages.success(request,f'Item is successfully added')
