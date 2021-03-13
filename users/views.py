@@ -16,6 +16,7 @@ def Register(request):
 		form = UserRegisterForm()
 	return render(request, 'users/register.html', {'form': form})
 
-	
-
+@login_required
+def Profile(request):
+    return render(request, 'users/profile.html')
 # Create your views here.
