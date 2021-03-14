@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.contrib.auth.models import User
+from users.models import meetup
 import yake
+from lost.models import LostItem
 
 def extract_keywords(description):
 	language = "en"
@@ -42,12 +44,35 @@ def found_form(request):
 			this_item.y = request.session.get('y', 0.0)
 			this_item.tags = ','.join(extract_keywords(request.POST['description']))
 			this_item.save()
+			all_products = LostItem.objects.all()
+			
+			finders = []
+			temp_item = []
+			for product in all_products:
+				flag_x = 0
+				if ((product.x - float(this_item.x))**2 + (product.y - float(this_item.y))**2)**0.5 <= 0.02:
+					temp_item = set(list(product.tags.split(',')))
+					temp_item2 = set(list(this_item.tags.split(',')))
+					# print(list(product.tags.split(',')))
+					print(temp_item)
+					temp_item = temp_item.intersection(temp_item2)
+					print(temp_item)
+					print(temp_item2)
+					# for kw in temp_item:
+					# 	for kw2 in list(this_item.tags.split(',')):
+					# 		if kw == kw2:
+					# 			flag_x += 1
+					if len(temp_item) >= 3:
+						finders.append(product)
+						meetup.objects.create(lost_end=product.person.id, found_end=this_item.person.id, product=this_item, isLost=True)
+
 
 			messages.success(request,f'Item is successfully added')
 			context = {
 				'id': this_item.id,
+				'finders': finders
 			}
-			return redirect('l&f-home')
+			return render(request, 'found/result.html', context)
 		else:
 			form = ProductFoundForm()
 			title = "Register Missing Article"

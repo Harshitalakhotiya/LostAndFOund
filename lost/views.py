@@ -8,6 +8,7 @@ from .models import *
 from django.contrib.auth.models import User
 from found.models import Product
 import yake
+from users.models import *
 
 def extract_keywords(description):
 	language = "en"
@@ -48,13 +49,20 @@ def lost_form(request):
             for product in all_products:
                 flag_x = 0
                 if ((product.x - float(this_item.x))**2 + (product.y - float(this_item.y))**2)**0.5 <= 0.02:
-                    temp_item = list(product.tags.split(','))
-                    for kw in temp_item:
-                        for kw2 in list(this_item.tags.split(',')):
-                            if kw == kw2:
-                                flag_x += 1
-                    if flag_x >= 3:
+                    temp_item = set(list(product.tags.split(',')))
+                    temp_item2 = set(list(this_item.tags.split(',')))
+                    temp_item = temp_item.intersection(temp_item2)
+                    print(list(product.tags.split(',')))
+
+
+                    # for kw in temp_item:
+                    #     for kw2 in list(this_item.tags.split(',')):
+                    #         if kw == kw2:
+                    #             flag_x += 1
+                    if len(temp_item) >= 3:
                         finders.append(product)
+                        meetup.objects.create(lost_end=this_item.person.id, found_end=product.person.id, product=product, isLost=True)
+                        
 
             #messages.success(request,f'Item is successfully added')
             context = {
