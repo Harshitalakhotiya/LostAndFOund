@@ -1,0 +1,28 @@
+{% extends "found/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% for i in items %}
+        <div class = "card">
+        <div class = "card-body">
+        {% if user.id == i.found_end %}
+            Owner of {{ i.product }} found!<br>
+            Owner Userame: {{ i.lost_end.username }}<br>
+            Owner Email: <a href = "#">{{ i.lost_end.email }}</a> <br>
+            Description: {{ i.product.description }}<br>
+        {% else %}
+            {{ i.product }} found!<br>
+            Username of founder: {{ i.found_end.username }}<br>
+            Email of founder: <a href = "#">{{ i.found_end.email }}</a><br>
+            Description: {{ i.product.description }}<br>
+        {% endif %}
+        </div></div>
+        <!--         
+        <form method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "id" value = "{{ i.id }}"/>
+            <button class = "btn btn-primary" type = "submit">Chat</button>
+        </form>
+        <p></p> -->
+        <!--{{ i.found_end }}, {{ i.lost_end }}, {{ i.product }}-->
+    {% endfor %}
+{% endblock content %}

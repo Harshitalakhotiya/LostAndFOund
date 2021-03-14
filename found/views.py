@@ -63,7 +63,7 @@ def found_form(request):
 					# 		if kw == kw2:
 					# 			flag_x += 1
 					if len(temp_item) >= 3:
-						finders.append(product)
+						finders.append(product.id)
 						meetup.objects.create(lost_end=product.person.id, found_end=this_item.person.id, product=this_item, isLost=True)
 
 
@@ -72,7 +72,10 @@ def found_form(request):
 				'id': this_item.id,
 				'finders': finders
 			}
-			return render(request, 'found/result.html', context)
+
+			#request.session['finders'] = ' '.join(finders)
+			#return redirect('foundresult')
+			return render(request, 'found/result.html', {'finders': finders})
 		else:
 			form = ProductFoundForm()
 			title = "Register Missing Article"
@@ -105,3 +108,24 @@ def index(request):
 		# return JsonResponse({"xvar":xv,"yvar":yv})
 	else:
 		return render(request, 'found/map.html')
+
+def scheduleMeetUp(request):
+	if request.method == 'POST':
+		product_id = request.POST['id']
+		product = Product.objects.get(id = product_id)
+
+		meetup.objects.create(lost_end=product.person.id, found_end=request.user.id, product=product, isLost=True)
+		messages.success(request,f'Lost Object has been Identified!')
+		return redirect('l&f-home')
+	else:
+		print(request.session.get('finders'))
+		if request.session.get('finders') is not None:
+			str_finders = request.session.get('finders')
+			print(str_finders)
+			id_finders = list(str_finders.split())
+			finders = []
+			for i in id_finders:
+				finders.append(Product.objects.get(id = i))
+			return render(request, 'lost/result.html', {'finders': finders})
+		else:
+			return redirect('l&f-home')

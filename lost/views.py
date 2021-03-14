@@ -71,9 +71,10 @@ def lost_form(request):
             }
 
             print(finders)
+            #request.session['finders'] = finders
 
             return render(request, 'lost/result.html', context)
-            #return redirect('l&f-home')
+            #return redirect('lostresult')
         else:
             form = LostItemForm()
             title = "Register Missing Article"
@@ -102,3 +103,18 @@ def index(request):
 		# return JsonResponse({"xvar":xv,"yvar":yv})
 	else:
 		return render(request, 'lost/map.html')
+
+def scheduleMeetUp(request):
+    if request.method == 'POST':
+        product_id = request.POST['id']
+        product = Product.objects.get(id = product_id)
+        
+        meetup.objects.create(lost_end=request.user.id, found_end=product.person.id, product=product, isLost=True)
+        messages.success(request,f'Lost Object has been Identified!')
+        return redirect('l&f-home')
+    else:
+        if request.session.get('finders'):
+            finders = request.session.get('finders')
+            return render(request, 'lost/result.html', {'finders': finders})
+        else:
+            pass

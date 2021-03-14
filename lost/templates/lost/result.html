@@ -3,6 +3,14 @@
 
 {% block content %}
     {% for i in finders %}
-        {{ i.name }}, {{ i.person }} <br>
+        {{ i.name }}<br> 
+        {{ i.person }}<br>
+        Description: {{ i.description }}<br>
+
+        <!-- <form method = 'POST'>
+            <input type = "hidden" name = "id" value = "{{ i.id }}"/>
+            <button class = "btn btn-primary" type = "submit">Verify</button>
+        </form> -->
+        <br><br>
     {% endfor %}
 {% endblock content %}
