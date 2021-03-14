@@ -4,7 +4,7 @@
     {% for i in items %}
         <div class = "card">
         <div class = "card-body">
-        {% if user.id == i.found_end %}
+        {% if user.id == i.found_end.id %}
             Owner of {{ i.product }} found!<br>
             Owner Userame: {{ i.lost_end.username }}<br>
             Owner Email: <a href = "#">{{ i.lost_end.email }}</a> <br>
