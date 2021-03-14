@@ -39,9 +39,16 @@ def showNotifications(request):
 
 	if request.method == "POST":
 		print(request.POST)
-		meet_id = request.POST.get("id")
+		#meet_id = request.POST.get("id")
+		email=request.POST.get('send_email')
+		message=request.POST.get('message')
 		if meet_id:
 			print(meet_id)
+			meetup_instance = meetup.objects.get(id = meet_id)
+
+			lost_id = meetup_instance.lost_end
+			found_end = meetup_instance.found_end
+
 		else:
 			print("No id found")
 	meetup_items = meetup.objects.filter(Q(lost_end = user_id) | Q(found_end = user_id))
